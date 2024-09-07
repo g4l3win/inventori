@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'product_page.dart';
+import 'login_page.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -13,7 +14,12 @@ class DashboardPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              // Tambahkan fungsi refresh
+              // Navigasi ke halaman login dan hapus riwayat halaman sebelumnya
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false,  // Menghapus semua halaman sebelumnya
+              );
             },
           )
         ],

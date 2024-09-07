@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'addproduct_page.dart';
 
 class ProductPage extends StatelessWidget {
   @override
@@ -17,7 +18,11 @@ class ProductPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              // Aksi untuk menambahkan produk baru
+              // Navigasi ke halaman AddProductPage
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddProductPage()),
+              );// Aksi untuk menambahkan produk baru
             },
           )
         ],

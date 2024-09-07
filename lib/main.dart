@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Screens/dashboard_page.dart'; // Import halaman Dashboard
+import 'Screens/login_page.dart';
 void main() {
   runApp(MyApp());
 }
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple, // Tema warna utama
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: DashboardPage(), // Halaman pertama yang ditampilkan
+      home: LoginPage(), // Halaman pertama yang ditampilkan
     );
   }
 }
