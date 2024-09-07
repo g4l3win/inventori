@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inventori/Screens/history_page.dart';
 import 'product_page.dart';
 import 'login_page.dart';
 
@@ -65,7 +66,13 @@ class DashboardPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context)=>ProductPage()),
                     );
                   }),
-                  _buildMenuItem('History', '1 Act'),
+                  _buildMenuItem('History', '1 Act', onTap: (){
+                    // Navigasi ke halaman history
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HistoryPage()),
+                    );// Aksi untuk melihat history
+                  }),
                   _buildMenuItem('IN', '1 Item'),
                   _buildMenuItem('OUT', '0 Item'),
                 ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'addproduct_page.dart';
+import 'history_page.dart';
 
 class ProductPage extends StatelessWidget {
   @override

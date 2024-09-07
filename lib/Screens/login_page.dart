@@ -18,7 +18,7 @@ class LoginPage extends StatelessWidget {
             children: [
               // Judul
               Text(
-                'Inventory Course',
+                'Inventory Management',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 36,
@@ -81,7 +81,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   child: Text(
                     'LOGIN',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),
