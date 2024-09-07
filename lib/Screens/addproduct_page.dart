@@ -7,16 +7,16 @@ class AddProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product', style: TextStyle(color: Colors.white),),
+        title: Text('Add Product', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.purple,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white,),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context); // Aksi untuk kembali ke halaman sebelumnya
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -33,6 +33,12 @@ class AddProductPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 style: TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the product code';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
 
@@ -46,6 +52,12 @@ class AddProductPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 style: TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the product name';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
 
@@ -60,6 +72,12 @@ class AddProductPage extends StatelessWidget {
                 ),
                 style: TextStyle(color: Colors.white),
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the product price';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
 
@@ -74,6 +92,12 @@ class AddProductPage extends StatelessWidget {
                 ),
                 style: TextStyle(color: Colors.white),
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the product stock';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
 
@@ -87,6 +111,12 @@ class AddProductPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 style: TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the product unit';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
 
@@ -96,16 +126,17 @@ class AddProductPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     // Aksi untuk menambahkan produk
-                    if (_formKey.currentState!.validate()) {
+                    if (_formKey.currentState?.validate() == true) {
                       // Lakukan validasi form dan aksi lainnya
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Product Added!')),
                       );
                     }
                   },
-                  style: ElevatedButton.styleFrom( backgroundColor: Colors.purple, // Warna latar belakang tombol// Warna tombol ungu
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple, // Warna tombol ungu
                   ),
-                  child: Text('Add Product', style: TextStyle(color: Colors.white),),
+                  child: Text('Add Product', style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -113,6 +144,7 @@ class AddProductPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.black, // Latar belakang hitam
+      resizeToAvoidBottomInset: true, // Atur ulang ketika keyboard muncul
     );
   }
 }

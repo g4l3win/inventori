@@ -46,6 +46,12 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 style: TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
 
@@ -63,7 +69,14 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 style: TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
               ),
+
               SizedBox(height: 40),
 
               // Tombol Login
@@ -71,9 +84,14 @@ class LoginPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=>DashboardPage())
-                    );// Aksi saat tombol login ditekan
+                    // Periksa apakah form valid sebelum login
+                    if (_formKey.currentState?.validate() == true) {
+                      // Jika valid, navigasi ke DashboardPage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DashboardPage()),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple, // Warna tombol ungu
