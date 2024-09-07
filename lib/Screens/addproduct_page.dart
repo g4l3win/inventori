@@ -7,10 +7,10 @@ class AddProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product'),
+        title: Text('Add Product', style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.purple,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () {
             Navigator.pop(context); // Aksi untuk kembali ke halaman sebelumnya
           },

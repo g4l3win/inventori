@@ -6,6 +6,9 @@ class PilihProductOUTPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
+        iconTheme: IconThemeData(
+          color: Colors.white, // Mengubah warna arrow back menjadi putih
+        ),
         title: Row(
           children: [
             Text(

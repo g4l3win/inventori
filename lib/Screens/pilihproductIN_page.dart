@@ -6,6 +6,9 @@ class PilihProductINPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
+        iconTheme: IconThemeData(
+          color: Colors.white, // Mengubah warna arrow back menjadi putih
+        ),
         title: Row(
           children: [
             Text(
@@ -34,7 +37,7 @@ class PilihProductINPage extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.search),
+            child: Icon(Icons.search, color: Colors.white,),
           ),
         ],
       ),

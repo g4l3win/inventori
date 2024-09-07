@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'addproduct_page.dart';
-import 'history_page.dart';
 
 class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product'),
+        title: Text('Product', style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.purple,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () {
             Navigator.pop(context); // Aksi untuk kembali ke halaman sebelumnya
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.add, color: Colors.white,),
             onPressed: () {
               // Navigasi ke halaman AddProductPage
               Navigator.push(

@@ -12,11 +12,12 @@ class DashboardPage extends StatelessWidget {
     //scaffold untuk mengatur halaman aplikasi yang konsisten buat appbar, body dst
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Menyembunyikan tombol arrow back
         title: Text('Dashboard', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.purple,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.logout, color: Colors.white,),
             onPressed: () {
               // Navigasi ke halaman login dan hapus riwayat halaman sebelumnya
               Navigator.pushAndRemoveUntil(

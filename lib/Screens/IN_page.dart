@@ -6,17 +6,17 @@ class INPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('IN Product'),
+        title: Text('IN Product', style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.purple,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () {
             Navigator.pop(context); // Aksi untuk kembali ke halaman sebelumnya
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.check),
+            icon: Icon(Icons.check, color: Colors.white,),
             onPressed: () {
               // Navigasi ke halaman INPage
               Navigator.push(
