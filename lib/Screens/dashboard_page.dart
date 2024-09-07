@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:inventori/Screens/OUT_page.dart';
 import 'package:inventori/Screens/history_page.dart';
 import 'product_page.dart';
 import 'login_page.dart';
 import 'IN_page.dart';
+
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -81,7 +83,12 @@ class DashboardPage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => INPage()),
                 );
                 }),
-                  _buildMenuItem('OUT', '0 Item'),
+                  _buildMenuItem('OUT', '2 Item', onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>OUTPage())
+                    );
+                  }),
                 ],
               ),
             ),
