@@ -5,7 +5,6 @@ import 'product_page.dart';
 import 'login_page.dart';
 import 'IN_page.dart';
 
-
 class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,13 +16,17 @@ class DashboardPage extends StatelessWidget {
         backgroundColor: Colors.purple,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.white,),
+            icon: Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
             onPressed: () {
               // Navigasi ke halaman login dan hapus riwayat halaman sebelumnya
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
-                    (Route<dynamic> route) => false,  // Menghapus semua halaman sebelumnya
+                (Route<dynamic> route) =>
+                    false, // Menghapus semua halaman sebelumnya
               );
             },
           )
@@ -64,31 +67,32 @@ class DashboardPage extends StatelessWidget {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: [
-                  _buildMenuItem('Product', '2 Item', onTap:(){
+                  _buildMenuItem('Product', '2 Item', Icons.inventory,
+                      onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context)=>ProductPage()),
+                      MaterialPageRoute(builder: (context) => ProductPage()),
                     );
                   }),
-                  _buildMenuItem('History', '1 Act', onTap: (){
+                  _buildMenuItem('History', '1 Act', Icons.history, onTap: () {
                     // Navigasi ke halaman history
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => HistoryPage()),
-                    );// Aksi untuk melihat history
+                    ); // Aksi untuk melihat history
                   }),
-                  _buildMenuItem('IN', '1 Item',onTap: (){
-                // Navigasi ke halaman history
-                Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => INPage()),
-                );
-                }),
-                  _buildMenuItem('OUT', '2 Item', onTap: (){
+                  _buildMenuItem('IN', '1 Item', Icons.arrow_downward,
+                      onTap: () {
+                    // Navigasi ke halaman history
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context)=>OUTPage())
+                      MaterialPageRoute(builder: (context) => INPage()),
                     );
+                  }),
+                  _buildMenuItem('OUT', '2 Item', Icons.arrow_upward,
+                      onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => OUTPage()));
                   }),
                 ],
               ),
@@ -101,7 +105,8 @@ class DashboardPage extends StatelessWidget {
   }
 
   // Fungsi untuk membangun tampilan setiap item di Grid
-  Widget _buildMenuItem(String title, String subtitle, {VoidCallback? onTap}) {
+  Widget _buildMenuItem(String title, String subtitle, IconData icon,
+      {VoidCallback? onTap}) {
     return Card(
       color: Colors.deepPurple,
       child: InkWell(
@@ -112,6 +117,7 @@ class DashboardPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Icon(icon, color: Colors.white, size: 30), // Tambahkan Icon
               Text(
                 title,
                 style: TextStyle(color: Colors.white, fontSize: 25),
