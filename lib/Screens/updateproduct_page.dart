@@ -24,7 +24,7 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
     // Mengisi TextEditingController dengan data produk yang akan diupdate
     codeController = TextEditingController(text: widget.product['code']);
     nameController = TextEditingController(text: widget.product['name']);
-    priceController = TextEditingController(text: widget.product['price']);
+    priceController = TextEditingController(text: widget.product['price'].toString());
     stockController = TextEditingController(text: widget.product['quantity'].toString());
     unitController = TextEditingController(text: widget.product['unit']);
   }
@@ -172,7 +172,7 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                       Navigator.pop(context, {
                         'name': nameController.text,
                         'code': codeController.text,
-                        'price': priceController.text,
+                        'price': int.parse(priceController.text),
                         'quantity': int.parse(stockController.text),
                         'unit': unitController.text,
                       });

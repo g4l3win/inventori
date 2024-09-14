@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'Please enter your email';
                   }
                   return null;
                 },
