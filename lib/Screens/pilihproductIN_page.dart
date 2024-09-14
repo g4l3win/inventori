@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class PilihProductINPage extends StatelessWidget {
+
+  final List<Map<String, dynamic>> productList = [
+    {'name': 'Kaos Kaki Jempol', 'code': 'KKJL001', 'price': 50000, 'quantity': 52, 'unit': 'Lusin'},
+    {'name': 'Sarung Tangan Putih', 'code': 'STP001', 'price': 48000, 'quantity': 23, 'unit': 'Lusin'},
+    // Tambahkan produk lainnya
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +18,7 @@ class PilihProductINPage extends StatelessWidget {
         title: Row(
           children: [
             Text(
-              'Product',
+              'pilih Product masuk',
               style: TextStyle(color: Colors.white),
             ),
             SizedBox(width: 20),
@@ -37,49 +43,25 @@ class PilihProductINPage extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.search, color: Colors.white,),
+            child: Icon(Icons.search, color: Colors.white),
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Pilih Produk Masuk',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 10),
-              ListView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  _buildProductItem(
-                    context,
-                    'Kaos Kaki Jempol Lutut',
-                    'KKJL001',
-                    'Rp 50.000,00',
-                    52,
-                    'Lusin',
-                  ),
-                  _buildProductItem(
-                    context,
-                    'Sarung tangan putih',
-                    'STP001',
-                    'Rp 48.000,00',
-                    23,
-                    'Lusin',
-                  ),
-                ],
-              ),
-            ],
-          ),
+        child: ListView.builder(
+          itemCount: productList.length,
+          itemBuilder: (context, index) {
+            final product = productList[index];
+            return _buildProductItem(
+              context,
+              product['name'],
+              product['code'],
+              product['price'],
+              product['quantity'],
+              product['unit'],
+            );
+          },
         ),
       ),
       backgroundColor: Colors.black,
@@ -90,7 +72,7 @@ class PilihProductINPage extends StatelessWidget {
       BuildContext context,
       String name,
       String code,
-      String price,
+      int price,
       int quantity,
       String unit,
       ) {
@@ -98,7 +80,7 @@ class PilihProductINPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: GestureDetector(
         onTap: () {
-          _showQuantityDialog(context, name, quantity);
+          _showQuantityDialog(context, name, code, price, unit); // Tambahkan harga dan unit ke dialog
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,7 +90,7 @@ class PilihProductINPage extends StatelessWidget {
               children: [
                 Text(name, style: TextStyle(color: Colors.white)),
                 Text('Code: $code', style: TextStyle(color: Colors.white70)),
-                Text(price, style: TextStyle(color: Colors.white)),
+                Text('Rp $price', style: TextStyle(color: Colors.white)),
               ],
             ),
             Text('$quantity $unit', style: TextStyle(color: Colors.white)),
@@ -118,7 +100,8 @@ class PilihProductINPage extends StatelessWidget {
     );
   }
 
-  void _showQuantityDialog(BuildContext context, String productName, int quantity) {
+  // Fungsi untuk menampilkan dialog input kuantitas
+  void _showQuantityDialog(BuildContext context, String name, String code, int price, String unit) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -146,10 +129,20 @@ class PilihProductINPage extends StatelessWidget {
               onPressed: () {
                 int? enteredQuantity = int.tryParse(quantityController.text);
                 if (enteredQuantity != null) {
-                  print('Menambah $enteredQuantity unit $productName ke inventaris.');
-                  _showSnackBar(context, 'Menambah $enteredQuantity unit $productName ke inventaris.');
+                  // Kembalikan data produk beserta kuantitasnya ke halaman INPage
+                  Navigator.of(context).pop({
+                    'name': name,
+                    'code': code,
+                    'price': price,
+                    'quantity': enteredQuantity,
+                    'unit': unit,
+                  });
+                  print('Menambah $enteredQuantity unit $name dari inventaris.');
+                  _showSnackBar(context, 'Menambahkan $enteredQuantity unit $name dari inventaris.');
                 }
-                Navigator.of(context).pop();
+                else {
+                  print("Kuantitas tidak valid");
+                }
               },
             ),
           ],
@@ -157,13 +150,13 @@ class PilihProductINPage extends StatelessWidget {
       },
     );
   }
-
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
 }
+void _showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+    ),
+  );
+}
+
