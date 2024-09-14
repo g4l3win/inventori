@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inventori/Screens/pilihproductIN_page.dart';
+//import 'package:inventori/Screens/pilihproductIN_page.dart';
 
 class INPage extends StatefulWidget {
   @override
@@ -7,10 +7,22 @@ class INPage extends StatefulWidget {
 }
 
 class _INPageState extends State<INPage> {
+  // Daftar produk yang tersedia
+  List<Map<String, dynamic>> availableProducts = [
+    {'name': 'Kaos Kaki Jempol Lutut', 'code': 'KKJL001', 'price': 50000, 'unit': 'Lusin'},
+    {'name': 'Sarung Tangan Putih', 'code': 'STP001', 'price': 48000, 'unit': 'Lusin'},
+  ];
+
   // Daftar produk masuk
   List<Map<String, dynamic>> products = [
-    {'name': 'Kaos Kaki Jempol Lutut', 'code': 'KKJL001', 'price': 50000, 'quantity': 2, 'unit': 'Lusin'},
+    //{'name': 'Kaos Kaki Jempol Lutut', 'code': 'KKJL001', 'price': 50000, 'quantity': 2, 'unit': 'Lusin'},
   ];
+
+  // Variabel untuk produk yang dipilih dari dropdown
+  Map<String, dynamic>? selectedProduct;
+
+  // Controller untuk jumlah barang yang masuk
+  TextEditingController quantityController = TextEditingController();
 
   // Fungsi untuk menghitung total harga
   num _calculateTotalPrice() {
@@ -23,19 +35,31 @@ class _INPageState extends State<INPage> {
 
   // Fungsi untuk menambah produk baru dari PilihProductINPage
   Future<void> _addProduct() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PilihProductINPage()), // Navigasi ke halaman pilih produk
-    );
-
-    if (result != null) {
-      print("Produk yang ditambahkan: $result");
-      setState(() {
-        // Langsung tambahkan produk baru ke daftar tanpa pengecekan
-        products.add(result);
-      });
+    if (selectedProduct != null && quantityController.text.isNotEmpty) {
+      int? quantity = int.tryParse(quantityController.text);
+      if (quantity != null && quantity > 0) {
+        setState(() {
+          // Menambahkan produk ke daftar
+          products.add({
+            'name': selectedProduct!['name'],
+            'code': selectedProduct!['code'],
+            'price': selectedProduct!['price'],
+            'quantity': quantity,
+            'unit': selectedProduct!['unit'],
+          });
+          // Reset form setelah menambahkan produk
+          selectedProduct = null;
+          quantityController.clear();
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Jumlah barang tidak valid'),
+        ));
+      }
     } else {
-      print("Tidak ada produk yang ditambahkan.");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Pilih produk dan masukkan jumlah barang'),
+      ));
     }
   }
 
@@ -77,7 +101,7 @@ class _INPageState extends State<INPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('IN Product', style: TextStyle(color: Colors.white)),
+        title: Text('Produk Masuk', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.purple,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -85,6 +109,15 @@ class _INPageState extends State<INPage> {
             Navigator.pop(context); // Aksi untuk kembali ke halaman sebelumnya
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.check, color: Colors.white,),
+            onPressed: () {
+
+             // Aksi untuk menyimpan perubahan produk baru
+            },
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -93,6 +126,45 @@ class _INPageState extends State<INPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Dropdown untuk memilih produk
+              DropdownButton<Map<String, dynamic>>(
+                hint: Text(
+                  'Pilih produk',
+                  style: TextStyle(color: Colors.white),
+                ),
+                value: selectedProduct,
+                onChanged: (Map<String, dynamic>? newValue) {
+                  setState(() {
+                    selectedProduct = newValue;
+                  });
+                },
+                items: availableProducts.map((Map<String, dynamic> product) {
+                  return DropdownMenuItem<Map<String, dynamic>>(
+                    value: product,
+                    child: Text(
+                      product['name'],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }).toList(),
+                dropdownColor: Colors.purple[700],
+              ),
+              SizedBox(height: 20),
+
+              // TextField untuk input kuantitas
+              TextField(
+                controller: quantityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Masukkan jumlah',
+                  labelStyle: TextStyle(color: Colors.white),
+                  filled: true,
+                  fillColor: Colors.black54,
+                ),
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity, // Agar tombol memenuhi lebar layar
                 child: ElevatedButton(
