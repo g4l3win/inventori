@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 class AddProductPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController codeController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController stockController = TextEditingController();
+  final TextEditingController unitController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +31,7 @@ class AddProductPage extends StatelessWidget {
             children: [
               // Code
               TextFormField(
+                controller: codeController,
                 decoration: InputDecoration(
                   labelText: 'Code *',
                   labelStyle: TextStyle(color: Colors.white),
@@ -44,6 +51,7 @@ class AddProductPage extends StatelessWidget {
 
               // Name
               TextFormField(
+                controller: nameController,
                 decoration: InputDecoration(
                   labelText: 'Name *',
                   labelStyle: TextStyle(color: Colors.white),
@@ -63,6 +71,7 @@ class AddProductPage extends StatelessWidget {
 
               // Price
               TextFormField(
+                controller: priceController,
                 decoration: InputDecoration(
                   labelText: 'Price *',
                   labelStyle: TextStyle(color: Colors.white),
@@ -83,6 +92,7 @@ class AddProductPage extends StatelessWidget {
 
               // Stock
               TextFormField(
+                controller: stockController,
                 decoration: InputDecoration(
                   labelText: 'Stock *',
                   labelStyle: TextStyle(color: Colors.white),
@@ -103,6 +113,7 @@ class AddProductPage extends StatelessWidget {
 
               // Unit
               TextFormField(
+                controller: unitController,
                 decoration: InputDecoration(
                   labelText: 'Unit *',
                   labelStyle: TextStyle(color: Colors.white),
@@ -127,6 +138,14 @@ class AddProductPage extends StatelessWidget {
                   onPressed: () {
                     // Aksi untuk menambahkan produk
                     if (_formKey.currentState?.validate() == true) {
+                      // Kembalikan data produk ke ProductPage
+                      Navigator.pop(context, {
+                        'code': codeController.text,
+                        'name': nameController.text,
+                        'price': int.parse(priceController.text),
+                        'quantity': int.parse(stockController.text),
+                        'unit': unitController.text,
+                      });
                       // Lakukan validasi form dan aksi lainnya
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Product Added!')),
@@ -136,7 +155,8 @@ class AddProductPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple, // Warna tombol ungu
                   ),
-                  child: Text('Add Product', style: TextStyle(color: Colors.white)),
+                  child: Text('Add Product',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],

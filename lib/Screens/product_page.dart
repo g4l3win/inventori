@@ -13,14 +13,14 @@ class _ProductPageState extends State<ProductPage> {
     {
       'name': 'Kaos Kaki Jempol Lutut',
       'code': 'KKJL001',
-      'price': 'Rp 50.000,00',
+      'price': 50000,  // Tetap gunakan int
       'quantity': 52,
       'unit': 'Lusin'
     },
     {
       'name': 'Sarung tangan putih',
       'code': 'STP001',
-      'price': 'Rp 48.000,00',
+      'price': 48000,  // Tetap gunakan int
       'quantity': 23,
       'unit': 'Lusin'
     },
@@ -42,12 +42,19 @@ class _ProductPageState extends State<ProductPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: Colors.white),
-            onPressed: () {
-              // Navigasi ke halaman AddProductPage
-              Navigator.push(
+            onPressed: () async {
+              // Navigasi ke halaman AddProductPage dan tunggu hasil
+              final newProduct = await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AddProductPage()),
-              ); // Aksi untuk menambahkan produk baru
+              );
+
+              // Tambahkan produk baru jika tidak null
+              if (newProduct != null) {
+                setState(() {
+                  products.add(newProduct); // Tambah produk ke list
+                });
+              }
             },
           )
         ],
@@ -97,7 +104,7 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   // Fungsi untuk membangun tampilan setiap item produk
-  Widget _buildProductItem(String name, String code, String price, int quantity, String unit, BuildContext context, int index) {
+  Widget _buildProductItem(String name, String code, int price, int quantity, String unit, BuildContext context, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -116,7 +123,7 @@ class _ProductPageState extends State<ProductPage> {
                 style: TextStyle(color: Colors.grey),
               ),
               Text(
-                price,
+                'Rp $price',  // Ubah harga ke format tanpa desimal
                 style: TextStyle(color: Colors.green),
               ),
             ],

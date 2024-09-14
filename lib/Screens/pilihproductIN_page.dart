@@ -137,7 +137,7 @@ class PilihProductINPage extends StatelessWidget {
                     'quantity': enteredQuantity,
                     'unit': unit,
                   });
-                  print('Menambah $enteredQuantity unit $name dari inventaris.');
+                  print('Menambah $enteredQuantity unit $name ke inventaris.');
                   _showSnackBar(context, 'Menambahkan $enteredQuantity unit $name dari inventaris.');
                 }
                 else {
