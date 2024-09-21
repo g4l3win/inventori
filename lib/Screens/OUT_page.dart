@@ -8,8 +8,8 @@ class OUTPage extends StatefulWidget {
 class _OUTPageState extends State<OUTPage> {
   // Daftar produk yang tersedia
   List<Map<String, dynamic>> availableProducts = [
-    {'name': 'Kaos Kaki Jempol Lutut', 'code': 'KKJL001', 'price': 50000, 'unit': 'Lusin'},
-    {'name': 'Sarung Tangan Putih', 'code': 'STP001', 'price': 48000, 'unit': 'Lusin'},
+    {'gambar' : 'img/fotoa.jpg', 'name': 'Kaos Kaki', 'code': 'KKJL001', 'price': 50000, 'unit': 'Lusin'},
+    {'gambar' : 'img/fotob.jpg','name': 'Sarung Tangan Putih', 'code': 'STP001', 'price': 48000, 'unit': 'Lusin'},
   ];
 
   // Daftar produk KELUAR
@@ -38,6 +38,7 @@ class _OUTPageState extends State<OUTPage> {
         setState(() {
           // Menambahkan produk ke daftar
           products.add({
+            'gambar': selectedProduct!['gambar'],
             'name': selectedProduct!['name'],
             'code': selectedProduct!['code'],
             'price': selectedProduct!['price'],
@@ -189,6 +190,7 @@ class _OUTPageState extends State<OUTPage> {
                 itemBuilder: (context, index) {
                   final product = products[index];
                   return _buildProductItem(
+                    product['gambar'],
                     product['name'],
                     product['code'],
                     product['price'],
@@ -224,21 +226,32 @@ class _OUTPageState extends State<OUTPage> {
   }
 
   // Fungsi untuk membangun tampilan setiap item produk
-  Widget _buildProductItem(String name, String code, int price, int quantity, String unit, int index) {
+  Widget _buildProductItem(String gambar, String name, String code, int price, int quantity, String unit, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Kolom kiri dan kanan
+        mainAxisAlignment: MainAxisAlignment.start, // Kolom kiri dan kanan
         children: [
+          Column(
+            children: [
+              Image.asset(
+                gambar,
+                width: 40, height: 40,
+                fit: BoxFit.cover,
+              ),
+            ],
+          ),
+          SizedBox(width: 10),
           // Kolom di kiri (nama produk, kode, dan harga)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: TextStyle(color: Colors.white, fontSize: 25)),
+              Text(name, style: TextStyle(color: Colors.white, fontSize: 15)),
               Text('Code: $code', style: TextStyle(color: Colors.grey)),
               Text('Rp $price,00', style: TextStyle(color: Colors.green)),
             ],
           ),
+          Spacer(), // Memberikan jarak otomatis antara teks dan ikon
           // Kolom di kanan (jumlah dan satuan)
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,

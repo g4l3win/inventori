@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';  // Import image_picker
+import 'dart:io';  // Import untuk file
 
 class UpdateProductPage extends StatefulWidget {
   final Map<String, dynamic> product; // Menerima data produk
@@ -18,6 +20,7 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
   late TextEditingController stockController;
   late TextEditingController unitController;
 
+  File? _image;  // Untuk menyimpan gambar baru yang dipilih
   @override
   void initState() {
     super.initState();
@@ -37,6 +40,17 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
     stockController.dispose();
     unitController.dispose();
     super.dispose();
+  }
+
+  // Fungsi untuk memilih gambar dari galeri
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);  // Simpan gambar baru yang dipilih
+      });
+    }
   }
 
   @override
@@ -59,6 +73,41 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Tampilkan gambar produk atau tombol untuk pilih gambar
+              Text(
+                'Product Image *',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(height: 10),
+              _image != null
+                  ? Image.file(
+                _image!,  // Gambar baru yang dipilih
+                height: 150,
+                width: 150,
+                fit: BoxFit.cover,
+              )
+                  : widget.product['gambar'] != null
+                  ? Image.asset(
+                widget.product['gambar'],  // Gambar lama dari produk
+                height: 150,
+                width: 150,
+                fit: BoxFit.cover,
+              )
+                  : Container(
+                height: 150,
+                width: 150,
+                color: Colors.grey[300],
+                child: Icon(Icons.add_a_photo, color: Colors.white),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _pickImage,  // Aksi untuk memilih gambar baru
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                ),
+                child: Text('Pilih gambar', style: TextStyle(color: Colors.white)),
+              ),
+              SizedBox(height: 20),
               // Code
               TextFormField(
                 controller: codeController,
@@ -170,6 +219,7 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                     if (_formKey.currentState?.validate() == true) {
                       // Kembalikan produk yang telah diupdate ke halaman sebelumnya
                       Navigator.pop(context, {
+                        'gambar': _image?.path ?? widget.product['gambar'],  // Gambar baru atau tetap gambar lama
                         'name': nameController.text,
                         'code': codeController.text,
                         'price': int.parse(priceController.text),

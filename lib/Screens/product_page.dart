@@ -126,7 +126,7 @@ class _ProductPageState extends State<ProductPage> {
               fit: BoxFit.cover,
             )
                 :  Image.asset(
-                gambar?? 'img/default.jpg',
+                gambar,
                 width: 40, height: 40,
                 fit: BoxFit.cover,
               ),
