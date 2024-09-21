@@ -5,9 +5,11 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner:false,
       title: 'Inventory Management', // Judul aplikasi
       theme: ThemeData(
         primarySwatch: Colors.purple, // Tema warna utama

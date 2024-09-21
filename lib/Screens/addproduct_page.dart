@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';  // Import image_picker
+import 'dart:io';  // Import untuk file
 
-class AddProductPage extends StatelessWidget {
+class AddProductPage extends StatefulWidget {
+  @override
+  _AddProductPageState createState() => _AddProductPageState();
+}
+class _AddProductPageState extends State<AddProductPage> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController codeController = TextEditingController();
@@ -9,6 +15,17 @@ class AddProductPage extends StatelessWidget {
   final TextEditingController stockController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
 
+  File? _image;  // Untuk menyimpan gambar yang dipilih
+  // Fungsi untuk memilih gambar dari galeri
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);  // Simpan path gambar yang dipilih
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +46,31 @@ class AddProductPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              //gambar produk
+              Text(
+                'Product Image *',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(height: 10),
+
+              // Tampilkan gambar yang dipilih atau tombol tambah gambar
+              _image != null
+                  ? Image.file(
+                _image!,
+                height: 150,
+                width: 150,
+                fit: BoxFit.cover,
+              )
+                  : GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 150,
+                  width: 150,
+                  color: Colors.grey[300],
+                  child: Icon(Icons.add_a_photo, color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 20),
               // Code
               TextFormField(
                 controller: codeController,
@@ -140,6 +182,7 @@ class AddProductPage extends StatelessWidget {
                     if (_formKey.currentState?.validate() == true) {
                       // Kembalikan data produk ke ProductPage
                       Navigator.pop(context, {
+                        'gambar': _image?.path ?? 'img/fotoa.jpg',  // Gunakan gambar default jika tidak ada, // Kirim path gambar
                         'code': codeController.text,
                         'name': nameController.text,
                         'price': int.parse(priceController.text),

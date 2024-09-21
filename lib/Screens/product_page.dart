@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'addproduct_page.dart';
 import 'updateproduct_page.dart'; // Import halaman update
+import 'dart:io';  // Tambahkan ini untuk menggunakan File
+
 
 class ProductPage extends StatefulWidget {
   @override
@@ -11,16 +13,18 @@ class _ProductPageState extends State<ProductPage> {
   // List produk yang bisa berubah
   List<Map<String, dynamic>> products = [
     {
-      'name': 'Kaos Kaki Jempol Lutut',
+      'gambar' : 'img/fotoa.jpg',
+      'name': 'Kaos Kaki',
       'code': 'KKJL001',
-      'price': 50000,  // Tetap gunakan int
+      'price': 50000,
       'quantity': 52,
       'unit': 'Lusin'
     },
     {
+      'gambar' : 'img/fotob.jpg',
       'name': 'Sarung tangan putih',
       'code': 'STP001',
-      'price': 48000,  // Tetap gunakan int
+      'price': 48000,
       'quantity': 23,
       'unit': 'Lusin'
     },
@@ -85,6 +89,7 @@ class _ProductPageState extends State<ProductPage> {
                 itemBuilder: (context, index) {
                   final product = products[index];
                   return _buildProductItem(
+                    product['gambar'],
                     product['name'],
                     product['code'],
                     product['price'],
@@ -104,19 +109,37 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   // Fungsi untuk membangun tampilan setiap item produk
-  Widget _buildProductItem(String name, String code, int price, int quantity, String unit, BuildContext context, int index) {
+  Widget _buildProductItem(String gambar, String name, String code, int price, int quantity, String unit, BuildContext context, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Kolom kiri dan kanan
+        mainAxisAlignment: MainAxisAlignment.start, // Kolom kiri dan kanan
         children: [
+          //kolom gambar
+          Column(
+            children: [
+              _isLocalFile(gambar)  // Cek apakah gambar berasal dari file lokal atau asset
+                ? Image.file(
+                File(gambar),
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+            )
+                :  Image.asset(
+                gambar?? 'img/default.jpg',
+                width: 40, height: 40,
+                fit: BoxFit.cover,
+              ),
+            ],
+          ),
+          SizedBox(width: 10),
           // Kolom di kiri (nama produk, kode, dan harga)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 name,
-                style: TextStyle(color: Colors.white, fontSize: 25),
+                style: TextStyle(color: Colors.white, fontSize: 12),
               ),
               Text(
                 code,
@@ -128,7 +151,7 @@ class _ProductPageState extends State<ProductPage> {
               ),
             ],
           ),
-
+          Spacer(), // Memberikan jarak otomatis antara teks dan ikon
           // Kolom di kanan (jumlah dan satuan)
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -212,4 +235,9 @@ class _ProductPageState extends State<ProductPage> {
       content: Text('Produk berhasil dihapus'),
     ));
   }
+}
+
+// Fungsi untuk cek apakah gambar adalah path file lokal
+bool _isLocalFile(String path) {
+  return path.startsWith('/data/') || path.startsWith('/storage/'); // Sesuaikan dengan path dari cache/galeri
 }
