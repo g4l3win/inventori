@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';  // Import image_picker
-import 'dart:io';  // Import untuk file
+import 'package:image_picker/image_picker.dart'; // Import image_picker
+import 'dart:io'; // Import untuk file
 
 class UpdateProductPage extends StatefulWidget {
   final Map<String, dynamic> product; // Menerima data produk
@@ -20,15 +20,17 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
   late TextEditingController stockController;
   late TextEditingController unitController;
 
-  File? _image;  // Untuk menyimpan gambar baru yang dipilih
+  File? _image; // Untuk menyimpan gambar baru yang dipilih
   @override
   void initState() {
     super.initState();
     // Mengisi TextEditingController dengan data produk yang akan diupdate
     codeController = TextEditingController(text: widget.product['code']);
     nameController = TextEditingController(text: widget.product['name']);
-    priceController = TextEditingController(text: widget.product['price'].toString());
-    stockController = TextEditingController(text: widget.product['quantity'].toString());
+    priceController =
+        TextEditingController(text: widget.product['price'].toString());
+    stockController =
+        TextEditingController(text: widget.product['quantity'].toString());
     unitController = TextEditingController(text: widget.product['unit']);
   }
 
@@ -44,11 +46,12 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
 
   // Fungsi untuk memilih gambar dari galeri
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);  // Simpan gambar baru yang dipilih
+        _image = File(pickedFile.path); // Simpan gambar baru yang dipilih
       });
     }
   }
@@ -81,31 +84,46 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
               SizedBox(height: 10),
               _image != null
                   ? Image.file(
-                _image!,  // Gambar baru yang dipilih
-                height: 150,
-                width: 150,
-                fit: BoxFit.cover,
-              )
+                      _image!, // Gambar baru yang dipilih
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    )
                   : widget.product['gambar'] != null
-                  ? Image.asset(
-                widget.product['gambar'],  // Gambar lama dari produk
-                height: 150,
-                width: 150,
-                fit: BoxFit.cover,
-              )
-                  : Container(
-                height: 150,
-                width: 150,
-                color: Colors.grey[300],
-                child: Icon(Icons.add_a_photo, color: Colors.white),
-              ),
+                      ? _isLocalFile(widget.product['gambar'])
+                          ? Image.file(
+                              File(widget.product['gambar']), // Gambar lama dari produk
+                              height: 150,
+                              width: 150,
+                              fit: BoxFit.cover,
+                            )
+                          : widget.product['gambar'].startsWith('http')
+                              ? Image.network(
+                                  widget.product['gambar'], // Jika gambar berasal dari URL
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  widget.product['gambar'], // Jika gambar berasal dari asset lokal
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                )
+                      : Container(
+                          height: 150,
+                          width: 150,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.add_a_photo, color: Colors.white),
+                        ),
               SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _pickImage,  // Aksi untuk memilih gambar baru
+                onPressed: _pickImage, // Aksi untuk memilih gambar baru
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
                 ),
-                child: Text('Pilih gambar', style: TextStyle(color: Colors.white)),
+                child:
+                    Text('Pilih gambar', style: TextStyle(color: Colors.white)),
               ),
               SizedBox(height: 20),
               // Code
@@ -219,7 +237,9 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                     if (_formKey.currentState?.validate() == true) {
                       // Kembalikan produk yang telah diupdate ke halaman sebelumnya
                       Navigator.pop(context, {
-                        'gambar': _image?.path ?? widget.product['gambar'],  // Gambar baru atau tetap gambar lama
+                        'gambar': _image?.path ??
+                            widget.product[
+                                'gambar'], // Gambar baru atau tetap gambar lama
                         'name': nameController.text,
                         'code': codeController.text,
                         'price': int.parse(priceController.text),
@@ -231,7 +251,8 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple, // Warna tombol ungu
                   ),
-                  child: Text('Update Product', style: TextStyle(color: Colors.white)),
+                  child: Text('Update Product',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -242,4 +263,10 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
       resizeToAvoidBottomInset: true, // Atur ulang ketika keyboard muncul
     );
   }
+}
+
+// Fungsi untuk cek apakah gambar adalah path file lokal
+bool _isLocalFile(String path) {
+  return path.startsWith('/data/') ||
+      path.startsWith('/storage/'); // Sesuaikan dengan path dari cache/galeri
 }

@@ -118,17 +118,24 @@ class _ProductPageState extends State<ProductPage> {
           //kolom gambar
           Column(
             children: [
-              _isLocalFile(gambar)  // Cek apakah gambar berasal dari file lokal atau asset
-                ? Image.file(
-                File(gambar),
-              width: 40,
-              height: 40,
-              fit: BoxFit.cover,
-            )
-                :  Image.asset(
-                gambar,
-                width: 40, height: 40,
+              gambar.isNotEmpty
+                  ? (_isLocalFile(gambar)
+                  ? Image.file(
+                File(gambar), // Jika gambar berasal dari file lokal
+                width: 40,
+                height: 40,
                 fit: BoxFit.cover,
+              )
+                  : Image.asset(
+                gambar, // Jika gambar berasal dari asset lokal
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+              ))
+                  : Container(
+                width: 40,
+                height: 40,
+                color: Colors.grey, // Placeholder jika tidak ada gambar
               ),
             ],
           ),
