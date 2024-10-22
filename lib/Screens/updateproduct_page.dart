@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Import image_picker
-import 'dart:io'; // Import untuk file
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:inventori/db_helper/repository.dart';
 
 class UpdateProductPage extends StatefulWidget {
-  final Map<String, dynamic> product; // Menerima data produk
+  final Map<String, dynamic> product;
 
   UpdateProductPage({required this.product});
 
@@ -13,18 +14,18 @@ class UpdateProductPage extends StatefulWidget {
 
 class _UpdateProductPageState extends State<UpdateProductPage> {
   final _formKey = GlobalKey<FormState>();
+  final ProductRepository _productRepository = ProductRepository();
 
   late TextEditingController codeController;
   late TextEditingController nameController;
   late TextEditingController priceController;
   late TextEditingController stockController;
   late TextEditingController unitController;
+  File? _image;
 
-  File? _image; // Untuk menyimpan gambar baru yang dipilih
   @override
   void initState() {
     super.initState();
-    // Mengisi TextEditingController dengan data produk yang akan diupdate
     codeController = TextEditingController(text: widget.product['code']);
     nameController = TextEditingController(text: widget.product['name']);
     priceController =
@@ -44,15 +45,26 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
     super.dispose();
   }
 
-  // Fungsi untuk memilih gambar dari galeri
   Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path); // Simpan gambar baru yang dipilih
+        _image = File(pickedFile.path);
       });
+    }
+  }
+
+  Future<void> updateProductInDatabase(
+      Map<String, dynamic> updatedProduct) async {
+    try {
+      await _productRepository.updateProduct(
+          updatedProduct['code'], updatedProduct);
+      Navigator.pop(context, updatedProduct);
+    } catch (e) {
+      print("Error updating product: $e");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to update product')));
     }
   }
 
@@ -65,7 +77,7 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context); // Aksi untuk kembali ke halaman sebelumnya
+            Navigator.pop(context);
           },
         ),
       ),
@@ -76,40 +88,20 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Tampilkan gambar produk atau tombol untuk pilih gambar
-              Text(
-                'Product Image *',
-                style: TextStyle(color: Colors.white),
-              ),
+              Text('Product Image *', style: TextStyle(color: Colors.white)),
               SizedBox(height: 10),
               _image != null
-                  ? Image.file(
-                      _image!, // Gambar baru yang dipilih
-                      height: 150,
-                      width: 150,
-                      fit: BoxFit.cover,
-                    )
+                  ? Image.file(_image!,
+                      height: 150, width: 150, fit: BoxFit.cover)
                   : widget.product['gambar'] != null
                       ? _isLocalFile(widget.product['gambar'])
-                          ? Image.file(
-                              File(widget.product['gambar']), // Gambar lama dari produk
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                            )
+                          ? Image.file(File(widget.product['gambar']),
+                              height: 150, width: 150, fit: BoxFit.cover)
                           : widget.product['gambar'].startsWith('http')
-                              ? Image.network(
-                                  widget.product['gambar'], // Jika gambar berasal dari URL
-                                  height: 150,
-                                  width: 150,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  widget.product['gambar'], // Jika gambar berasal dari asset lokal
-                                  height: 150,
-                                  width: 150,
-                                  fit: BoxFit.cover,
-                                )
+                              ? Image.network(widget.product['gambar'],
+                                  height: 150, width: 150, fit: BoxFit.cover)
+                              : Image.asset(widget.product['gambar'],
+                                  height: 150, width: 150, fit: BoxFit.cover)
                       : Container(
                           height: 150,
                           width: 150,
@@ -118,139 +110,40 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                         ),
               SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _pickImage, // Aksi untuk memilih gambar baru
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                ),
+                onPressed: _pickImage,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
                 child:
                     Text('Pilih gambar', style: TextStyle(color: Colors.white)),
               ),
               SizedBox(height: 20),
-              // Code
-              TextFormField(
-                controller: codeController,
-                decoration: InputDecoration(
-                  labelText: 'Code *',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.black,
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the product code';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField('Code *', codeController),
               SizedBox(height: 20),
-
-              // Name
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Name *',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.black,
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the product name';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField('Name *', nameController),
               SizedBox(height: 20),
-
-              // Price
-              TextFormField(
-                controller: priceController,
-                decoration: InputDecoration(
-                  labelText: 'Price *',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.black,
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the product price';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField('Price *', priceController, isNumber: true),
               SizedBox(height: 20),
-
-              // Stock
-              TextFormField(
-                controller: stockController,
-                decoration: InputDecoration(
-                  labelText: 'Stock *',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.black,
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the product stock';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField('Stock *', stockController, isNumber: true),
               SizedBox(height: 20),
-
-              // Unit
-              TextFormField(
-                controller: unitController,
-                decoration: InputDecoration(
-                  labelText: 'Unit *',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.black,
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the product unit';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField('Unit *', unitController),
               SizedBox(height: 20),
-
-              // Update Product Button
               SizedBox(
-                width: double.infinity, // Agar tombol memenuhi lebar layar
+                width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Aksi untuk edit produk
+                  onPressed: () async {
                     if (_formKey.currentState?.validate() == true) {
-                      // Kembalikan produk yang telah diupdate ke halaman sebelumnya
-                      Navigator.pop(context, {
-                        'gambar': _image?.path ??
-                            widget.product[
-                                'gambar'], // Gambar baru atau tetap gambar lama
-                        'name': nameController.text,
+                      final updatedProduct = {
                         'code': codeController.text,
+                        'name': nameController.text,
+                        'gambar': _image?.path ?? widget.product['gambar'],
                         'price': int.parse(priceController.text),
                         'quantity': int.parse(stockController.text),
                         'unit': unitController.text,
-                      });
+                      };
+                      await updateProductInDatabase(updatedProduct);
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple, // Warna tombol ungu
-                  ),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.purple),
                   child: Text('Update Product',
                       style: TextStyle(color: Colors.white)),
                 ),
@@ -259,14 +152,34 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
           ),
         ),
       ),
-      backgroundColor: Colors.black, // Latar belakang hitam
-      resizeToAvoidBottomInset: true, // Atur ulang ketika keyboard muncul
+      backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: true,
     );
   }
-}
 
-// Fungsi untuk cek apakah gambar adalah path file lokal
-bool _isLocalFile(String path) {
-  return path.startsWith('/data/') ||
-      path.startsWith('/storage/'); // Sesuaikan dengan path dari cache/galeri
+  Widget _buildTextField(String label, TextEditingController controller,
+      {bool isNumber = false}) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.white),
+        filled: true,
+        fillColor: Colors.black,
+        border: OutlineInputBorder(),
+      ),
+      style: TextStyle(color: Colors.white),
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter the product $label.toLowerCase()';
+        }
+        return null;
+      },
+    );
+  }
+
+  bool _isLocalFile(String path) {
+    return path.startsWith('/data/') || path.startsWith('/storage/');
+  }
 }
